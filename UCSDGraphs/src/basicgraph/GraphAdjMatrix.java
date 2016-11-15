@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** A class that implements a directed graph. 
  * The graph may have self-loops, parallel edges. 
@@ -105,7 +106,7 @@ public class GraphAdjMatrix extends Graph {
 	 */	
 	public List<Integer> getDistance2(int v) {
 		// XXX Implement this method in week 1
-		return null;
+		return getNeighbors(v).stream().flatMap( x -> getNeighbors(x).stream()).collect(Collectors.toList());
 	}
 	
 	/**
