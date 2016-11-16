@@ -26,14 +26,14 @@ public class SearchGrader implements Runnable {
         return "\n** Test #" + num + ": " + test + "...";
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SearchGrader grader = new SearchGrader();
 
         // Infinite loop detection
         Thread thread = new Thread(grader);
         thread.start();
         
-        // Allow it to run for 10 seconds
+//         Allow it to run for 10 seconds
         long endTime = System.currentTimeMillis() + 10000;
         boolean infinite = false;
         while(thread.isAlive()) {
