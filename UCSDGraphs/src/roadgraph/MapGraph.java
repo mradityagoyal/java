@@ -159,7 +159,7 @@ public class MapGraph {
 
 		while (!q.isEmpty()) {
 			GeographicPoint current = q.poll();
-			if (current == goal) {
+			if (current.x == goal.x && current.y == goal.y) {
 				return unwindParents(parents, start, goal);
 			}
 			Stream<GeographicPoint> unvisitedNeighbors = getNeighbors(current).filter(n -> !visited.contains(n));
