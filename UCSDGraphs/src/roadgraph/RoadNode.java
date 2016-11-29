@@ -10,14 +10,12 @@ public class RoadNode {
 	final GeographicPoint location;
 	final List<RoadEdge> outgoing;
 	private double distFromStart;
-	private double distToGoal;
 
 	public RoadNode(GeographicPoint location) {
 		super();
 		this.location = location;
 		this.outgoing = new ArrayList<>();
 		this.distFromStart = Double.MAX_VALUE;
-		this.distToGoal = Double.valueOf(0);
 	}
 
 	public double getDistFromStart() {
@@ -28,12 +26,9 @@ public class RoadNode {
 		this.distFromStart = distFromStart;
 	}
 
-	public double getDistToGoal() {
-		return distToGoal;
+	public double getEstimatedDistToGoal(GeographicPoint goal) {
+		return goal.distance(location);
 	}
 
-	public void setDistToGoal(double distToGoal) {
-		this.distToGoal = distToGoal;
-	}
 	
 }
