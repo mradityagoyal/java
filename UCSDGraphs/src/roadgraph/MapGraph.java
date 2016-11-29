@@ -7,7 +7,6 @@
  */
 package roadgraph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,12 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import geography.GeographicPoint;
-import geography.RoadSegment;
 import util.GraphLoader;
 
 /**
@@ -233,11 +231,41 @@ public class MapGraph {
 	 */
 	public List<GeographicPoint> dijkstra(GeographicPoint start, GeographicPoint goal,
 			Consumer<GeographicPoint> nodeSearched) {
-		// TODO: Implement this method in WEEK 3
 
-		// Hook for visualization. See writeup.
-		// nodeSearched.accept(next.getLocation());
+		Queue<RoadNode> pq = new PriorityBlockingQueue<>(10,
+				(a, b) -> Double.valueOf(a.getDistFromStart()).compareTo(b.getDistFromStart()));
+		Set<GeographicPoint> visited = new HashSet<>();
+		Map<GeographicPoint, GeographicPoint> parents = new HashMap<>();
 
+		RoadNode startNode = nodes.get(start);
+		startNode.setDistFromStart(Double.valueOf(0));
+		pq.add(startNode);
+
+		while (!pq.isEmpty()) {
+			RoadNode current = pq.poll();
+			if (!visited.contains(current.location)) {
+				visited.add(current.location);
+				if (current.location.x == goal.x && current.location.y == goal.y) {
+					return unwindParents(parents, start, goal);
+				}
+
+				// a stream of edges starting at current , whose end points are not in visited set. 
+				Stream<RoadEdge> unvisitedNeighborEdges = nodes.get(current.location).outgoing.stream()
+						.filter(e -> !visited.contains(e.end));
+				unvisitedNeighborEdges.forEach(edge -> {
+					nodeSearched.accept(edge.end);
+					RoadNode neighbor = nodes.get(edge.end);
+					// if path through current to n is shorter.
+					Double distThruCurrent = current.getDistFromStart() + edge.roadLength;
+					if (distThruCurrent < neighbor.getDistFromStart()) {
+						neighbor.setDistFromStart(distThruCurrent);
+						parents.put(neighbor.location, current.location);
+						pq.add(neighbor);
+					}
+				});
+			}
+
+		}
 		return null;
 	}
 
